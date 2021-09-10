@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:shop_app/models/boarding_model.dart';
 import 'package:shop_app/modules/auth/login/login_screen.dart';
 import 'package:shop_app/shared/constants.dart';
+import 'package:shop_app/shared/network/local/cache_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingScreen extends StatefulWidget {
+
   @override
   _OnBoardingScreenState createState() => _OnBoardingScreenState();
 }
@@ -32,6 +34,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     ),
   ];
 
+  void _submit() {
+    CacheHelper.putData(key: 'onBoarding', value: true).then((value) {
+      if (value) {
+        Get.offAndToNamed(LoginScreen.routeName);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,13 +50,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           backgroundColor: KBackgroungColor,
           actions: [
             TextButton(
-              onPressed: () {
-                Get.offAndToNamed(
-                  LoginScreen.routName,
-                );
-              },
+              onPressed: _submit,
               child: Padding(
-                padding: const EdgeInsets.only( right: 20.0),
+                padding: const EdgeInsets.only(right: 20.0),
                 child: Text(
                   'Skip',
                   style: TextStyle(color: KPrimaryColor),
@@ -92,11 +98,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   FloatingActionButton(
                     onPressed: () {
                       if (isLast) {
-                        Get.offAndToNamed(LoginScreen.routName);
+                        _submit();
                       } else {
                         boardingController.nextPage(
-                            duration: Duration(seconds: 1),
-                            curve: Curves.fastLinearToSlowEaseIn);
+                            duration: Duration(milliseconds: 600),
+                            curve: Curves.linear);
                       }
                     },
                     child: Icon(Icons.arrow_forward),

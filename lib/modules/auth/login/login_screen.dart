@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_app/modules/auth/auth_controller.dart';
 import 'package:shop_app/modules/auth/signup/signup_screen.dart';
-import 'package:shop_app/modules/login/auth_controller.dart';
 import 'package:shop_app/shared/constants.dart';
 
 class LoginScreen extends GetWidget<AuthController> {
-  static const routName = '/login_screen';
+  static const routeName = '/login_screen';
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  void _submit(context) {
+  void _submit(context) async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
-    controller.login(
+    await controller.login(
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
     );
@@ -72,48 +72,54 @@ class LoginScreen extends GetWidget<AuthController> {
                   SizedBox(
                     height: 15.0,
                   ),
-                  Obx(
-                    () => TextFormField(
-                      controller: _passwordController,
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: controller.isPassword.value,
-                      onFieldSubmitted: _submit,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: Icon(
-                          Icons.lock,
-                        ),
-                        suffixIcon: InkWell(
-                          onTap: () => controller.changeIsPassword(),
-                          child: Icon(
-                            Icons.remove_red_eye,
+                  GetBuilder<AuthController>(
+
+                    builder:(controller) =>  TextFormField(
+                        controller: _passwordController,
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: controller.isPassword,
+                        onFieldSubmitted: (_) => _submit(context),
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          prefixIcon: Icon(
+                            Icons.lock,
                           ),
+                          suffixIcon: InkWell(
+                            onTap: () => controller.changeIsPassword(),
+                            child: Icon(
+                              Icons.remove_red_eye,
+                            ),
+                          ),
+                          border: OutlineInputBorder(),
                         ),
-                        border: OutlineInputBorder(),
+                        validator: (String? val) {
+                          if (val!.length < 6) {
+                            return 'The password is too short';
+                          } else
+                            return null;
+                        },
                       ),
-                      validator: (String? val) {
-                        if (val!.length < 6) {
-                          return 'The password is too short';
-                        } else
-                          return null;
-                      },
-                    ),
                   ),
+                  
                   SizedBox(
                     height: 20.0,
                   ),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.blue,
-                    child: MaterialButton(
-                      onPressed: () => _submit(context),
-                      child: Text(
-                        'LOGIN',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  Obx(
+                    () => controller.isLoading.value
+                        ? Center(child: CircularProgressIndicator())
+                        : Container(
+                            width: double.infinity,
+                            color: Colors.blue,
+                            child: MaterialButton(
+                              onPressed: () => _submit(context),
+                              child: Text(
+                                'LOGIN',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                   ),
                   SizedBox(
                     height: 10.0,
@@ -125,7 +131,7 @@ class LoginScreen extends GetWidget<AuthController> {
                         'Don\'t have an account?',
                       ),
                       TextButton(
-                        onPressed: () => Get.toNamed(SignUpScreen.routName),
+                        onPressed: () => Get.toNamed(SignUpScreen.routeName),
                         child: Text(
                           'Register Now',
                         ),

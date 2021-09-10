@@ -4,22 +4,21 @@ class DioHelper {
   static late Dio dio;
   static init() {
     dio = Dio(BaseOptions(
-        baseUrl: 'https://student.valuxapps.com/api/',
-        receiveDataWhenStatusError: true,
-        headers: {
-          'Content-Type': 'application/json',
-        }));
+      baseUrl: 'https://student.valuxapps.com/api/',
+      receiveDataWhenStatusError: true,
+    ));
   }
 
   static Future<Response> getData({
     required String url,
-    required Map<String, dynamic> query,
-     String lang = 'en',
+    Map<String, dynamic>? query,
+    String lang = 'en',
     String? token,
   }) async {
-     dio.options.headers = {
-      'lang':lang,
-      'Authorization':token,
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'lang': lang,
+      'Authorization': token ?? '',
     };
     return await dio.get(
       url,
@@ -34,14 +33,14 @@ class DioHelper {
     String lang = 'en',
     String? token,
   }) async {
+    print(token);
     dio.options.headers = {
-      'lang':lang,
-      'Authorization':token,
+      'Content-Type': 'application/json',
+      'lang': lang,
+      'Authorization': token ?? '',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE, HEAD",
     };
-    return dio.post(
-      url,
-      queryParameters: query,
-      data: data,
-    );
+    return dio.post(url, queryParameters: query, data: data);
   }
 }

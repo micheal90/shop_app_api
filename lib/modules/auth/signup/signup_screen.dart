@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shop_app/modules/login/auth_controller.dart';
 import 'package:shop_app/shared/constants.dart';
 
+import '../auth_controller.dart';
+
 class SignUpScreen extends GetWidget<AuthController> {
-  static const routName = '/signup_screen';
+  static const routeName = '/signup_screen';
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -12,10 +13,7 @@ class SignUpScreen extends GetWidget<AuthController> {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
-    controller.login(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    //Todo  call signup function
   }
 
   @override
@@ -70,11 +68,11 @@ class SignUpScreen extends GetWidget<AuthController> {
                   SizedBox(
                     height: 15.0,
                   ),
-                  Obx(
-                    () => TextFormField(
+                  GetBuilder<AuthController>(
+                    builder:(controller) =>  TextFormField(
                       controller: _passwordController,
                       keyboardType: TextInputType.visiblePassword,
-                      obscureText: controller.isPassword.value,
+                      obscureText: controller.isPassword,
                       onFieldSubmitted: (String value) {
                         print(value);
                       },
@@ -105,47 +103,48 @@ class SignUpScreen extends GetWidget<AuthController> {
                   SizedBox(
                     height: 15.0,
                   ),
-                  TextFormField(
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: controller.isPassword.value,
-                    onFieldSubmitted: (String value) {
-                      print(value);
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password',
-                      prefixIcon: Icon(
-                        Icons.lock,
-                      ),
-                      suffixIcon: InkWell(
-                        onTap: () => controller.changeIsPassword(),
-                        child: Icon(
-                          Icons.remove_red_eye,
+                  GetBuilder<AuthController>(
+                    builder:(controller) => TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: controller.isPassword,
+                      onFieldSubmitted: (String value) {
+                        print(value);
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        prefixIcon: Icon(
+                          Icons.lock,
                         ),
+                        
+                        border: OutlineInputBorder(),
                       ),
-                      border: OutlineInputBorder(),
+                      validator: (String? val) {
+                        if (val != _passwordController.text) {
+                          return 'The password not match';
+                        } else
+                          return null;
+                      },
                     ),
-                    validator: (String? val) {
-                      if (val != _passwordController.text) {
-                        return 'The password not match';
-                      } else
-                        return null;
-                    },
                   ),
                   SizedBox(
                     height: 20.0,
                   ),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.blue,
-                    child: MaterialButton(
-                      onPressed: () => _submit(context),
-                      child: Text(
-                        'SIGNUP',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  Obx(
+                    () => controller.isLoading.value
+                        ? Center(child: CircularProgressIndicator())
+                        : Container(
+                            width: double.infinity,
+                            color: Colors.blue,
+                            child: MaterialButton(
+                              onPressed: () => _submit(context),
+                              child: Text(
+                                'SIGNUP',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                   ),
                   SizedBox(
                     height: 10.0,

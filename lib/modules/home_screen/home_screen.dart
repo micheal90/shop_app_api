@@ -1,33 +1,42 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_app/modules/categories_screen/categories_controller.dart';
+import 'package:shop_app/modules/favorites_screen/favorite_controller.dart';
 import 'package:shop_app/modules/home_screen/home_controller.dart';
 import 'package:shop_app/shared/constants.dart';
+import 'package:shop_app/shared/widgets/category_list_item.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home_screen';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GetBuilder<HomeController>(
-        init: Get.put(HomeController()),
-        builder: (controller) => controller.isloading.value
+      body: GetX<HomeController>(
+        init: Get.find<HomeController>(),
+        builder: (controller) => controller.isloading.value &&
+                Get.find<CategoriesConntroller>().isloading.value
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CarouselSlider(
                       items: controller.banners
-                          .map((e) => Image(
-                                image: NetworkImage(e.image),
-                                fit: BoxFit.fill,
-                                width: double.infinity,
+                          .map((e) => ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image(
+                                  image: NetworkImage(e.image),
+                                  fit: BoxFit.fill,
+                                  width: double.infinity,
+                                ),
                               ))
                           .toList(),
                       options: CarouselOptions(
                         height: 180,
                         aspectRatio: 1,
-                        viewportFraction: 1.0,
+                        viewportFraction: 0.85,
                         initialPage: 0,
                         enableInfiniteScroll: true,
                         reverse: false,
@@ -42,6 +51,38 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(
                       height: 5,
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Categories',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          buildCategoriesList(),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'New Products',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     buildGridProducts()
                   ],
                 ),
@@ -50,11 +91,31 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget buildCategoriesList() {
+    return GetBuilder<CategoriesConntroller>(
+      init: Get.find<CategoriesConntroller>(),
+      builder: (controller) => Container(
+          height: 100,
+          child: ListView.separated(
+            physics: BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => CategoryListItem(
+              image: controller.categories[index].image,
+              text: controller.categories[index].name,
+            ),
+            separatorBuilder: (context, index) => const SizedBox(
+              width: 5,
+            ),
+            itemCount: 5,
+          )),
+    );
+  }
+
   Container buildGridProducts() {
     return Container(
       color: Colors.grey[200],
       child: GetBuilder<HomeController>(
-        init: Get.find(),
+        init: Get.find<HomeController>(),
         builder: (controller) => GridView.builder(
             itemCount: controller.products.length,
             shrinkWrap: true,
@@ -63,10 +124,10 @@ class HomeScreen extends StatelessWidget {
               crossAxisSpacing: 1,
               mainAxisSpacing: 1,
               maxCrossAxisExtent: 250,
-              childAspectRatio: 1 / 1.9,
+              childAspectRatio: 1 / 1.6,
             ),
             itemBuilder: (context, index) => Container(
-                  color: Colors.white,
+                  color: KBackgroungColor,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -77,6 +138,7 @@ class HomeScreen extends StatelessWidget {
                           Image(
                             height: 200,
                             width: double.infinity,
+                            fit: BoxFit.fill,
                             image:
                                 NetworkImage(controller.products[index].image),
                           ),
@@ -124,13 +186,17 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 Spacer(),
                                 IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.favorite_border,
-                                    color: Colors.red,
-                                    size: 15,
-                                  ),
-                                  padding: EdgeInsets.zero,
+                                  onPressed: () =>
+                                      Get.find<FavoriteController>()
+                                          .changeFavorite(
+                                              controller.products[index].id),
+                                  icon: controller.favoriteList[controller.products[index].id]
+                                      ? Icon(Icons.favorite)
+                                      : Icon(
+                                          Icons.favorite_border,
+                                          color: Colors.grey,
+                                          size: 25,
+                                        ),
                                 )
                               ],
                             )
