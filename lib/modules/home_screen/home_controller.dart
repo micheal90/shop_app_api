@@ -11,7 +11,7 @@ class HomeController extends GetxController {
   List<ProductModel> _products = [];
   List<BannerModel> get banners => [..._banners];
   List<ProductModel> get products => [..._products];
-  Map favoriteList = {};
+  Map favoriteHomeList = {};
   RxBool isloading = false.obs;
 
   @override
@@ -29,18 +29,22 @@ class HomeController extends GetxController {
       _banners = homeModel.data.banners;
       _products = homeModel.data.products;
       homeModel.data.products.forEach((element) {
-        favoriteList.addAll({element.id: element.inFavorite});
+        favoriteHomeList.addAll({element.id: element.inFavorite});
       });
-      print(favoriteList.toString());
+      //print(favoriteHomeList.toString());
       update();
     }).catchError((e) {
-      Get.snackbar('Occureed Error', e.toString());
+      Get.snackbar(
+        'An error occurred!',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     });
     isloading.value = false;
   }
 
   changeFavorite(int productId) {
-    favoriteList[productId] = !favoriteList[productId];
+    favoriteHomeList[productId] = !favoriteHomeList[productId];
     update();
   }
 

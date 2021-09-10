@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:shop_app/modules/auth/auth_controller.dart';
 import 'package:shop_app/modules/auth/login/login_screen.dart';
 import 'package:shop_app/modules/categories_screen/caterories_screen.dart';
+import 'package:shop_app/modules/favorites_screen/favorite_controller.dart';
+import 'package:shop_app/modules/favorites_screen/favorites_screen.dart';
 import 'package:shop_app/modules/home_screen/home_screen.dart';
 import 'package:shop_app/shared/constants.dart';
 
 class ControllView extends StatelessWidget {
-
   Widget build(BuildContext context) {
     return GetX<AuthController>(
       init: Get.find<AuthController>(),
@@ -35,7 +36,7 @@ class _TabScreenState extends State<TabScreen> {
   late List<Map<String, dynamic>> _pages;
   @override
   void initState() {
-    
+    Get.find<FavoriteController>();
     _pages = [
       {
         'title': 'Home',
@@ -47,7 +48,7 @@ class _TabScreenState extends State<TabScreen> {
       },
       {
         'title': 'Favorites',
-        'body': HomeScreen(),
+        'body': FavoritesScreen(),
       },
     ];
 
@@ -66,7 +67,14 @@ class _TabScreenState extends State<TabScreen> {
             color: Colors.black,
           ),
         ),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search,color: Colors.black,))],
+        actions: [
+          IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search,
+                color: Colors.black,
+              ))
+        ],
       ),
       body: _pages[_currentIndex]['body'],
       bottomNavigationBar: BottomNavigationBar(

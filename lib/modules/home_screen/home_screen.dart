@@ -190,8 +190,8 @@ class HomeScreen extends StatelessWidget {
                                       Get.find<FavoriteController>()
                                           .changeFavorite(
                                               controller.products[index].id),
-                                  icon: controller.favoriteList[controller.products[index].id]
-                                      ? Icon(Icons.favorite)
+                                  icon: controller.favoriteHomeList[controller.products[index].id]
+                                      ? Icon(Icons.favorite,color: Colors.red,)
                                       : Icon(
                                           Icons.favorite_border,
                                           color: Colors.grey,

@@ -8,8 +8,8 @@ class CategoriesConntroller extends GetxController {
   List<DataModel> _categories = [];
   List<DataModel> get categories => [..._categories];
   ValueNotifier<bool> isloading = ValueNotifier(false);
-  
-@override
+
+  @override
   void onInit() {
     getCategories();
     super.onInit();
@@ -17,6 +17,7 @@ class CategoriesConntroller extends GetxController {
 
   getCategories() async {
     isloading.value = true;
+    categories.clear();
     await DioHelper.getData(url: CATEGORIES).then((value) {
       //print(value.data);
       CategoriesModel categoriesModel = CategoriesModel.fronJson(value.data);
@@ -27,6 +28,4 @@ class CategoriesConntroller extends GetxController {
     isloading.value = false;
     update();
   }
-
-  
 }

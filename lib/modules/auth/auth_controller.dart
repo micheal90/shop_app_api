@@ -53,14 +53,8 @@ class AuthController extends GetxController {
           update();
         });
       } else {
-        Fluttertoast.showToast(
-            msg: loginModel.message,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        Get.snackbar('Error Login Account', loginModel.message.toString(),
+            snackPosition: SnackPosition.BOTTOM);
       }
     }).catchError((e) {
       print(e.toString());
