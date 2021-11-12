@@ -1,6 +1,6 @@
 class LoginModel {
   bool status;
-  String message;
+  String? message;
   UserData? data;
   LoginModel({
     required this.status,

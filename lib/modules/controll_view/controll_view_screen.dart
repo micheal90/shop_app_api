@@ -3,24 +3,25 @@ import 'package:get/get.dart';
 import 'package:shop_app/modules/auth/auth_controller.dart';
 import 'package:shop_app/modules/auth/login/login_screen.dart';
 import 'package:shop_app/modules/categories_screen/caterories_screen.dart';
-import 'package:shop_app/modules/favorites_screen/favorite_controller.dart';
 import 'package:shop_app/modules/favorites_screen/favorites_screen.dart';
 import 'package:shop_app/modules/home_screen/home_screen.dart';
+import 'package:shop_app/modules/search_screen/search_screen.dart';
+import 'package:shop_app/modules/settings_screen/settings_screen.dart';
 import 'package:shop_app/shared/constants.dart';
 
 class ControllView extends StatelessWidget {
   Widget build(BuildContext context) {
-    return GetX<AuthController>(
+    return GetBuilder<AuthController>(
       init: Get.find<AuthController>(),
       builder: (controller) =>
-          controller.isAuth.value == false ? LoginScreen() : TabScreen(),
+          controller.isAuth == false ? LoginScreen() : TabScreen(),
     );
   }
 }
 
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key}) : super(key: key);
-
+  static const routeName = '/tab_screen';
   @override
   _TabScreenState createState() => _TabScreenState();
 }
@@ -36,7 +37,6 @@ class _TabScreenState extends State<TabScreen> {
   late List<Map<String, dynamic>> _pages;
   @override
   void initState() {
-    Get.find<FavoriteController>();
     _pages = [
       {
         'title': 'Home',
@@ -49,6 +49,10 @@ class _TabScreenState extends State<TabScreen> {
       {
         'title': 'Favorites',
         'body': FavoritesScreen(),
+      },
+      {
+        'title': 'Settings',
+        'body': SettingsScreen(),
       },
     ];
 
@@ -69,7 +73,7 @@ class _TabScreenState extends State<TabScreen> {
         ),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: ()=>Get.toNamed(SearchScreen.routeName),
               icon: Icon(
                 Icons.search,
                 color: Colors.black,
@@ -80,12 +84,15 @@ class _TabScreenState extends State<TabScreen> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: KBackgroungColor,
         currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
         onTap: _changIndex,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.apps), label: 'Categories'),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite), label: 'Favorites'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );

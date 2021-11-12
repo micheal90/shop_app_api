@@ -3,6 +3,7 @@ import 'package:shop_app/modules/auth/auth_controller.dart';
 import 'package:shop_app/modules/categories_screen/categories_controller.dart';
 import 'package:shop_app/modules/favorites_screen/favorite_controller.dart';
 import 'package:shop_app/modules/home_screen/home_controller.dart';
+import 'package:shop_app/modules/search_screen/search_controller.dart';
 
 class AppBinding extends Bindings {
   @override
@@ -11,5 +12,6 @@ class AppBinding extends Bindings {
     Get.lazyPut(() => HomeController());
     Get.lazyPut(() => CategoriesConntroller());
     Get.lazyPut(() => FavoriteController());
+    Get.lazyPut(() => SearchController());
   }
 }

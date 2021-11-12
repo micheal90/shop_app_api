@@ -17,8 +17,9 @@ class CategoriesConntroller extends GetxController {
 
   getCategories() async {
     isloading.value = true;
-    categories.clear();
+    
     await DioHelper.getData(url: CATEGORIES).then((value) {
+      categories.clear();
       //print(value.data);
       CategoriesModel categoriesModel = CategoriesModel.fronJson(value.data);
       _categories = categoriesModel.data.data;

@@ -106,7 +106,7 @@ class HomeScreen extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(
               width: 5,
             ),
-            itemCount: 5,
+            itemCount: controller.categories.length,
           )),
     );
   }
@@ -190,8 +190,12 @@ class HomeScreen extends StatelessWidget {
                                       Get.find<FavoriteController>()
                                           .changeFavorite(
                                               controller.products[index].id),
-                                  icon: controller.favoriteHomeList[controller.products[index].id]
-                                      ? Icon(Icons.favorite,color: Colors.red,)
+                                  icon: controller.favoriteHomeList[
+                                          controller.products[index].id]
+                                      ? Icon(
+                                          Icons.favorite,
+                                          color: Colors.red,
+                                        )
                                       : Icon(
                                           Icons.favorite_border,
                                           color: Colors.grey,

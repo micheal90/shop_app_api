@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shop_app/modules/auth/auth_controller.dart';
 import 'package:shop_app/modules/auth/signup/signup_screen.dart';
 import 'package:shop_app/shared/constants.dart';
+import 'package:shop_app/shared/widgets/default_button.dart';
 
 class LoginScreen extends GetWidget<AuthController> {
   static const routeName = '/login_screen';
@@ -73,53 +74,43 @@ class LoginScreen extends GetWidget<AuthController> {
                     height: 15.0,
                   ),
                   GetBuilder<AuthController>(
-
-                    builder:(controller) =>  TextFormField(
-                        controller: _passwordController,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: controller.isPassword,
-                        onFieldSubmitted: (_) => _submit(context),
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Icon(
-                            Icons.lock,
-                          ),
-                          suffixIcon: InkWell(
-                            onTap: () => controller.changeIsPassword(),
-                            child: Icon(
-                              Icons.remove_red_eye,
-                            ),
-                          ),
-                          border: OutlineInputBorder(),
+                    builder: (controller) => TextFormField(
+                      controller: _passwordController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: controller.isPassword,
+                      onFieldSubmitted: (_) => _submit(context),
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: Icon(
+                          Icons.lock,
                         ),
-                        validator: (String? val) {
-                          if (val!.length < 6) {
-                            return 'The password is too short';
-                          } else
-                            return null;
-                        },
+                        suffixIcon: InkWell(
+                          onTap: () => controller.changeIsPassword(),
+                          child:controller.isPassword?Icon(
+                            Icons.visibility_off
+                          ) :Icon(
+                            Icons.visibility,
+                          ),
+                        ),
+                        border: OutlineInputBorder(),
                       ),
+                      validator: (String? val) {
+                        if (val!.length < 6) {
+                          return 'The password is too short';
+                        } else
+                          return null;
+                      },
+                    ),
                   ),
-                  
                   SizedBox(
                     height: 20.0,
                   ),
                   Obx(
                     () => controller.isLoading.value
                         ? Center(child: CircularProgressIndicator())
-                        : Container(
-                            width: double.infinity,
-                            color: Colors.blue,
-                            child: MaterialButton(
-                              onPressed: () => _submit(context),
-                              child: Text(
-                                'LOGIN',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
+                        : DefaultButton(
+                          width: double.infinity,
+                            text: "LOGIN", onPressed:()=> _submit(context)),
                   ),
                   SizedBox(
                     height: 10.0,

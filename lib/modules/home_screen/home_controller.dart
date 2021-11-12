@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shop_app/models/home_model.dart';
 import 'package:shop_app/modules/auth/auth_controller.dart';
@@ -43,7 +42,7 @@ class HomeController extends GetxController {
     isloading.value = false;
   }
 
-  changeFavorite(int productId) {
+  changeFavoriteLocal(int productId) {
     favoriteHomeList[productId] = !favoriteHomeList[productId];
     update();
   }

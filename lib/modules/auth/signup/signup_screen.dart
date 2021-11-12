@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_app/shared/constants.dart';
+import 'package:shop_app/shared/widgets/default_button.dart';
 
 import '../auth_controller.dart';
 
@@ -8,12 +9,20 @@ class SignUpScreen extends GetWidget<AuthController> {
   static const routeName = '/signup_screen';
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+
+  final _phoneController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey();
-  void _submit(context) {
+  void _submit(context) async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
-
-    //Todo  call signup function
+    await controller.signUp(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      phone: _phoneController.text.trim(),
+    );
   }
 
   @override
@@ -22,6 +31,12 @@ class SignUpScreen extends GetWidget<AuthController> {
       appBar: AppBar(
         backgroundColor: KBackgroungColor,
         elevation: 0,
+        leading: IconButton(
+            onPressed: () => Get.back(),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -41,6 +56,32 @@ class SignUpScreen extends GetWidget<AuthController> {
                   ),
                   SizedBox(
                     height: 40.0,
+                  ),
+                  TextFormField(
+                    controller: _nameController,
+                    keyboardType: TextInputType.text,
+                    onFieldSubmitted: (String value) {
+                      print(value);
+                    },
+                    onChanged: (String value) {
+                      print(value);
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      prefixIcon: Icon(
+                        Icons.person,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (String? val) {
+                      if (val!.isEmpty) {
+                        return 'Name must be entered';
+                      } else
+                        return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 15.0,
                   ),
                   TextFormField(
                     controller: _emailController,
@@ -69,7 +110,7 @@ class SignUpScreen extends GetWidget<AuthController> {
                     height: 15.0,
                   ),
                   GetBuilder<AuthController>(
-                    builder:(controller) =>  TextFormField(
+                    builder: (controller) => TextFormField(
                       controller: _passwordController,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: controller.isPassword,
@@ -86,9 +127,11 @@ class SignUpScreen extends GetWidget<AuthController> {
                         ),
                         suffixIcon: InkWell(
                           onTap: () => controller.changeIsPassword(),
-                          child: Icon(
-                            Icons.remove_red_eye,
-                          ),
+                          child: controller.isPassword
+                              ? Icon(Icons.visibility_off)
+                              : Icon(
+                                  Icons.visibility,
+                                ),
                         ),
                         border: OutlineInputBorder(),
                       ),
@@ -103,28 +146,28 @@ class SignUpScreen extends GetWidget<AuthController> {
                   SizedBox(
                     height: 15.0,
                   ),
-                  GetBuilder<AuthController>(
-                    builder:(controller) => TextFormField(
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: controller.isPassword,
-                      onFieldSubmitted: (String value) {
-                        print(value);
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        prefixIcon: Icon(
-                          Icons.lock,
-                        ),
-                        
-                        border: OutlineInputBorder(),
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    onFieldSubmitted: (String value) {
+                      print(value);
+                    },
+                    onChanged: (String value) {
+                      print(value);
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Phone',
+                      prefixIcon: Icon(
+                        Icons.phone,
                       ),
-                      validator: (String? val) {
-                        if (val != _passwordController.text) {
-                          return 'The password not match';
-                        } else
-                          return null;
-                      },
+                      border: OutlineInputBorder(),
                     ),
+                    validator: (String? val) {
+                      if (val!.isEmpty) {
+                        return 'Phone must be entered';
+                      } else
+                        return null;
+                    },
                   ),
                   SizedBox(
                     height: 20.0,
@@ -132,18 +175,10 @@ class SignUpScreen extends GetWidget<AuthController> {
                   Obx(
                     () => controller.isLoading.value
                         ? Center(child: CircularProgressIndicator())
-                        : Container(
+                        : DefaultButton(
                             width: double.infinity,
-                            color: Colors.blue,
-                            child: MaterialButton(
-                              onPressed: () => _submit(context),
-                              child: Text(
-                                'SIGNUP',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+                            text: 'SIGNUP',
+                            onPressed: () => _submit(context),
                           ),
                   ),
                   SizedBox(
